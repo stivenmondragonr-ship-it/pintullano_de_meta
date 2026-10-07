@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react'
 
+// Ruta base del sitio: '/' en local o con dominio propio, '/productos/' en GitHub Pages (la define vite.config.js)
+const BASE = import.meta.env.BASE_URL
+const url = (path = '') => BASE + path                                  // url('contacto') -> '/productos/contacto'
+const asset = (file) => BASE + file.replace(/^\//, '')                  // asset('/logo.png') -> '/productos/logo.png'
+const currentPath = () => '/' + window.location.pathname.slice(BASE.length) // '/productos/contacto' -> '/contacto'
+
 const products = [
-  { name: 'Vinillo fino Tipo 1', image: `${import.meta.env.BASE_URL}vinillo fino tipo1 5g.png`, description: 'Ideal para interiores',  color: '#f4c400', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Muros interiores' },
-  { name: 'Vinillo fino Tipo 2', image: `${import.meta.env.BASE_URL}vinillo fino tipo2 g5.png`, description: 'Lavable y fácil de aplicar',  color: '#3fa9f2', category: 'Vinillos', finish: 'Mate', performance: 'Alta resistencia al lavado', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Paredes y techos interiores' },
-  { name: 'Vinillo fino Tipo 3', image: `${import.meta.env.BASE_URL}vinillo fino tipo3 5g.png`, description: 'Ideal para interiores',  color: '#5fe853', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Muros interiores' },
-  { name: 'Vinillo fino Tipo 1 industrial', image: `${import.meta.env.BASE_URL}vinillo fino tipo1 industrial 5g.png`, description: 'Ideal para interiores',  color: '#f20037', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Muros interiores' },
-  { name: 'Vinillo concentrado', image: `${import.meta.env.BASE_URL}concentrado.png`, description: 'Ideal para interiores',  color: '#f4c400', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '1 galón / 1/2 Galón / 1/4 Galón / cuñete', use: 'Muros interiores' },
-  { name: 'Esmalte sintetico', image: `${import.meta.env.BASE_URL}esmalte alcrilico.png`, description: 'Acabado resistente',  color: '#3fa9f2', category: 'Esmaltes', finish: 'Brillante', performance: 'Resistente a golpes y manchas', presentation: '1 galón / 1/4 de galón', use: 'Madera, metal y superficies preparadas' },
-  { name: 'Esmalte 3 en 1', image: `${import.meta.env.BASE_URL}esmalte 3 en 1.png`, description: 'Acabado resistente',  color: '#5fe853', category: 'Esmaltes', finish: 'Brillante', performance: 'Resistente a golpes y manchas', presentation: '1 galón / 1/4 de galón', use: 'Madera, metal y superficies preparadas' },
-  { name: 'Estuco Alcrilico', image: `${import.meta.env.BASE_URL}estuco alcrilico 30kg.png`, description: 'Protege de la humedad',  color: '#f4c400', category: 'Estuco', finish: 'Satinado', performance: 'Protección contra humedad', presentation: '30 KG / 15 KG / 6 KG', use: 'Fachadas, terrazas y exteriores' },
-  { name: 'Estuco plastico', image: `${import.meta.env.BASE_URL}estuco plastico 5g.png`, description: 'Protege de la humedad',  color: '#3fa9f2', category: 'Estuco', finish: 'Satinado', performance: 'Protección contra humedad', presentation: '5 Galón / 2.5 Galón / 1 Galón / 1/2 Galón / 1/4 Galón / 1/8 Galón / 1/16 Galón', use: 'Fachadas, terrazas y exteriores' },
-  { name: 'Impermeabilizante', image: `${import.meta.env.BASE_URL}imperproteja 5g.png`, description: 'Protege de la humedad',  color: '#5fe853', category: 'Impermeabilizante', finish: 'Satinado', performance: 'Protección contra humedad', presentation: '5 Galón / 1 galón', use: 'Fachadas, terrazas y exteriores' },
+  { name: 'Vinillo fino Tipo 1', image: '/vinillo fino tipo1 5g.png', description: 'Ideal para interiores',  color: '#f4c400', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Muros interiores' },
+  { name: 'Vinillo fino Tipo 2', image: '/vinillo fino tipo2 g5.png', description: 'Lavable y fácil de aplicar',  color: '#3fa9f2', category: 'Vinillos', finish: 'Mate', performance: 'Alta resistencia al lavado', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Paredes y techos interiores' },
+  { name: 'Vinillo fino Tipo 3', image: '/vinillo fino tipo3 5g.png', description: 'Ideal para interiores',  color: '#5fe853', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Muros interiores' },
+  { name: 'Vinillo fino Tipo 1 industrial', image: '/vinillo fino tipo1 industrial 5g.png', description: 'Ideal para interiores',  color: '#f20037', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '5 Galón / 2.5 Galón / 1 Galón ', use: 'Muros interiores' },
+  { name: 'Vinillo concentrado', image: '/concentrado.png', description: 'Ideal para interiores',  color: '#f4c400', category: 'Vinillos', finish: 'Mate', performance: 'Excelente cubrimiento', presentation: '1 galón / 1/2 Galón / 1/4 Galón / cuñete', use: 'Muros interiores' },
+  { name: 'Esmalte sintetico', image: '/esmalte alcrilico.png', description: 'Acabado resistente',  color: '#3fa9f2', category: 'Esmaltes', finish: 'Brillante', performance: 'Resistente a golpes y manchas', presentation: '1 galón / 1/4 de galón', use: 'Madera, metal y superficies preparadas' },
+  { name: 'Esmalte 3 en 1', image: '/esmalte 3 en 1.png', description: 'Acabado resistente',  color: '#5fe853', category: 'Esmaltes', finish: 'Brillante', performance: 'Resistente a golpes y manchas', presentation: '1 galón / 1/4 de galón', use: 'Madera, metal y superficies preparadas' },
+  { name: 'Estuco Alcrilico', image: '/estuco alcrilico 30kg.png', description: 'Protege de la humedad',  color: '#f4c400', category: 'Estuco', finish: 'Satinado', performance: 'Protección contra humedad', presentation: '30 KG / 15 KG / 6 KG', use: 'Fachadas, terrazas y exteriores' },
+  { name: 'Estuco plastico', image: '/estuco plastico 5g.png', description: 'Protege de la humedad',  color: '#3fa9f2', category: 'Estuco', finish: 'Satinado', performance: 'Protección contra humedad', presentation: '5 Galón / 2.5 Galón / 1 Galón / 1/2 Galón / 1/4 Galón / 1/8 Galón / 1/16 Galón', use: 'Fachadas, terrazas y exteriores' },
+  { name: 'Impermeabilizante', image: '/imperproteja 5g.png', description: 'Protege de la humedad',  color: '#5fe853', category: 'Impermeabilizante', finish: 'Satinado', performance: 'Protección contra humedad', presentation: '5 Galón / 1 galón', use: 'Fachadas, terrazas y exteriores' },
 ]
 const slides = [
   ['Pintar mi hogar', '¿Qué quieres hacer hoy?', 'Encuentra el color, la protección y el acabado que tu proyecto necesita.', 'VER PRODUCTOS'],
@@ -20,20 +26,20 @@ const slides = [
 const slugify = (name) => name.toLowerCase().replaceAll(' ', '-')
 
 function Header() {
-  return <><div className="announcement"></div><header className="site-header"><a className="brand" href="/" onClick={goHome}><img src={`${import.meta.env.BASE_URL}logo-pintullano.png`} alt="Pintullano" /></a><nav><a href="/contacto">CONTACTO</a><a href="/productos">PRODUCTOS</a><a className="category-button" href="/">INICIO</a></nav></header></>
+  const [open, setOpen] = useState(false)
+  return <><div className="announcement"></div><header className="site-header"><a className="brand" href={url()}><img src={asset('logo-pintullano.png')} alt="Pintullano" /></a><button className="menu-toggle" type="button" aria-label={open ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={open} onClick={() => setOpen(!open)}><span /><span /><span /></button><nav className={open ? 'open' : ''} onClick={() => setOpen(false)}><a href={url('contacto')}>CONTACTO</a><a href={url('productos')}>PRODUCTOS</a><a className="category-button" href={url()}>INICIO</a></nav></header></>
 }
-function goHome(event) { if (window.location.pathname !== '/') { event.preventDefault(); window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) } }
 function HeroCarousel() {
   const [active, setActive] = useState(0)
   useEffect(() => { const timer = setInterval(() => setActive((value) => (value + 1) % slides.length), 6000); return () => clearInterval(timer) }, [])
   const [eyebrow, title, description, cta] = slides[active]
-  return <section className="hero" id="inicio"><img src={`${import.meta.env.BASE_URL}paint-hero.png`} alt="Persona pintando un espacio del hogar" /><div className="hero-overlay" /><div className="hero-copy"><p>{eyebrow}</p><h1>{title}</h1><p>{description}</p><a className="button" href="/productos">{cta} ↓</a></div><div className="slider-controls"><div className="dots" role="tablist" aria-label="Diapositivas principales">{slides.map((slide, index) => <button key={slide[1]} className={index === active ? 'list-active' : ''} onClick={() => setActive(index)} aria-label={`Ir a diapositiva ${index + 1}`} aria-selected={index === active} />)}</div><span>0{active + 1} / 03</span></div></section>
+  return <section className="hero" id="inicio"><img src={asset('paint-hero.png')} alt="Persona pintando un espacio del hogar" /><div className="hero-overlay" /><div className="hero-copy"><p>{eyebrow}</p><h1>{title}</h1><p>{description}</p><a className="button" href={url('productos')}>{cta} →</a></div><div className="slider-controls"><div className="dots" role="tablist" aria-label="Diapositivas principales">{slides.map((slide, index) => <button key={slide[1]} className={index === active ? 'list-active' : ''} onClick={() => setActive(index)} aria-label={`Ir a diapositiva ${index + 1}`} aria-selected={index === active} />)}</div><span>0{active + 1} / 03</span></div></section>
 }
 function AboutSection() {
   return (
     <section className="about-section" id="quienes-somos">
       <div className="about-visual">
-        <img src={`${import.meta.env.BASE_URL}Logo Pintullano sobre Atardecer Vibrante.png`} />
+        <img src={asset('Logo Pintullano sobre Atardecer Vibrante.png')} alt="Pintullano, pinturas del Meta" />
         <div className="about-brand">
           
           <small>COLOR QUE TRANSFORMA</small>
@@ -68,7 +74,7 @@ function ProductVisual({ product, large }) {
   return (
     <div className="product-art" style={{ '--product-color': product.color }}>
       <img
-        src={product.image}
+        src={asset(product.image)}
         alt={product.name}
         style={{
           display: 'block',
@@ -82,12 +88,12 @@ function ProductVisual({ product, large }) {
     </div>
   )
 }
-function ProductCard({ product }) { return <article className="product-card"><ProductVisual product={product} /><div className="product-info"><p>{product.description}</p><h3>{product.name}</h3><strong>{product.price}</strong><a href={`/producto/${slugify(product.name)}`}>VER PRODUCTO →</a></div></article> }
+function ProductCard({ product }) { return <article className="product-card"><ProductVisual product={product} /><div className="product-info"><p>{product.description}</p><h3>{product.name}</h3><strong>{product.price}</strong><a href={url(`producto/${slugify(product.name)}`)}>VER PRODUCTO →</a></div></article> }
 function Products({ title = 'Productos destacados' }) {
   const [category, setCategory] = useState('Todos')
   const categories = ['Todos', 'Vinillos',  'Esmaltes','Estuco',"Impermeabilizante"]
   const visible = category === 'Todos' ? products : products.filter((product) => product.category === category)
-  return <section className="products" id="productos"><div className="section-heading"><div><p className="eyebrow">Calidad para cada proyecto</p><h2>Productos destacados</h2></div><p>Soluciones para pintar, renovar y proteger tus espacios.</p></div><div className="product-filter" role="tablist" aria-label="Filtrar productos">{categories.map((item) => <button key={item} className={category === item ? 'filter-active' : ''} onClick={() => setCategory(item)} role="tab" aria-selected={category === item}>{item}</button>)}</div><div className="product-grid">{visible.map((product) => <ProductCard key={product.name} product={product} />)}</div></section>
+  return <section className="products" id="productos"><div className="section-heading"><div><p className="eyebrow">Calidad para cada proyecto</p><h2>{title}</h2></div><p>Soluciones para pintar, renovar y proteger tus espacios.</p></div><div className="product-filter" role="tablist" aria-label="Filtrar productos">{categories.map((item) => <button key={item} className={category === item ? 'filter-active' : ''} onClick={() => setCategory(item)} role="tab" aria-selected={category === item}>{item}</button>)}</div><div className="product-grid">{visible.map((product) => <ProductCard key={product.name} product={product} />)}</div></section>
 }
 function CatalogPage() {
   return <><Header /><main className="catalog-page"><Products title="Nuestros productos" /></main><Footer /></>
@@ -140,25 +146,21 @@ function ContactPage() {
                   <strong>LLÁMANOS</strong>
                   <span>+57 314 398 1200</span>
                   </div>
-                  <div>
-                  <strong>VISÍTANOS</strong>
-                  
-                  </div>
                   </div>
                   <div className="contact-map">
-                   <iframe
-                     src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3979.5450526903005!2d-73.61671252502411!3d4.112525495861265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNMKwMDYnNDUuMSJOIDczwrAzNic1MC45Ilc!5e0!3m2!1ses!2sco!4v1791238580015!5m2!1ses!2sco"
-                       title="Ubicación de Pintullano"
-                        loading="lazy"
-                        allowFullScreen
-                        referrerPolicy="strict-origin-when-cross-origin"
-                     ></iframe>
-                   <a
-                     href="https://maps.app.goo.gl/eyJBzkboJ3LkfDkf9"
-                     target="_blank"
-                      rel="noreferrer"
-                     aria-label="Abrir ubicación en Google Maps"
-                   ></a>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3979.5450526903005!2d-73.61671252502411!3d4.112525495861265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNMKwMDYnNDUuMSJOIDczwrAzNic1MC45Ilc!5e0!3m2!1ses!2sco!4v1791238580015!5m2!1ses!2sco"
+    title="Ubicación de Pintullano"
+    loading="lazy"
+    allowFullScreen
+    referrerPolicy="strict-origin-when-cross-origin"
+  ></iframe>
+  <a
+    href="https://maps.app.goo.gl/eyJBzkboJ3LkfDkf9"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Abrir ubicación en Google Maps"
+  ></a>
 </div>
                   </div>
                   
@@ -187,16 +189,18 @@ function ContactPage() {
                           </>
                           
 }
-function Footer() { return <footer id="contacto"><div><div className="footer-brand"><img src={`${import.meta.env.BASE_URL}logo-pintullano.png`} alt="Pintullano" /></div><p>Pinturas para crear espacios que hablan de ti.</p></div><div><p className="eyebrow yellow-text">Contáctanos</p><p>+57 314 398 1200</p><a href="mailto:hola@pintullano.co">hola@pintullano.co</a><p>Villavicencio Meta, Colombia</p></div></footer> }
-function Detail({ product }) { return <><Header /><main className="detail-page"><a className="back-home" href="/" onClick={goHome}>← Volver a la página de inicio</a><section className="product-detail"><ProductVisual product={product} large /><div className="detail-copy"><p className="eyebrow">Pintullano · {product.category}</p><h1>{product.name}</h1><p className="detail-description">{product.description}. Una solución confiable para renovar tus espacios con un acabado profesional.</p><strong className="detail-price">{product.price}</strong><button className="button">CONSULTAR DISPONIBILIDAD</button><dl><div><dt>Acabado</dt><dd>{product.finish}</dd></div><div><dt>Rendimiento</dt><dd>{product.performance}</dd></div><div><dt>Presentación</dt><dd>{product.presentation}</dd></div><div><dt>Uso recomendado</dt><dd>{product.use}</dd></div></dl></div></section><Products /></main><Footer /></> }
-function getProduct() { const slug = window.location.pathname.match(/^\/producto\/([^/]+)/)?.[1]; return products.find((product) => slugify(product.name) === slug) }
+function Footer() { return <footer id="contacto"><div><div className="footer-brand"><img src={asset('logo-pintullano.png')} alt="Pintullano" /></div><p>Pinturas para crear espacios que hablan de ti.</p></div><div><p className="eyebrow yellow-text">Contáctanos</p><p>+57 314 398 1200</p><a href="mailto:hola@pintullano.co">hola@pintullano.co</a><p>Villavicencio Meta, Colombia</p></div></footer> }
+function Detail({ product }) { return <><Header /><main className="detail-page"><a className="back-home" href={url()}>← Volver a la página de inicio</a><section className="product-detail"><ProductVisual product={product} large /><div className="detail-copy"><p className="eyebrow">Pintullano · {product.category}</p><h1>{product.name}</h1><p className="detail-description">{product.description}. Una solución confiable para renovar tus espacios con un acabado profesional.</p><strong className="detail-price">{product.price}</strong><button className="button">CONSULTAR DISPONIBILIDAD</button><dl><div><dt>Acabado</dt><dd>{product.finish}</dd></div><div><dt>Rendimiento</dt><dd>{product.performance}</dd></div><div><dt>Presentación</dt><dd>{product.presentation}</dd></div><div><dt>Uso recomendado</dt><dd>{product.use}</dd></div></dl></div></section><Products /></main><Footer /></> }
+function getProduct() { const slug = currentPath().match(/^\/producto\/([^/]+)/)?.[1]; return products.find((product) => slugify(product.name) === slug) }
 export default function App() {
-  const [path, setPath] = useState(window.location.pathname)
+  const [path, setPath] = useState(currentPath)
   useEffect(() => {
-    const update = () => setPath(window.location.pathname)
+    const update = () => setPath(currentPath())
+    // Navegación interna: cualquier enlace del sitio cambia de página sin recargar
     const click = (event) => {
-      const link = event.target.closest('a[href^="/producto/"], a[href="/contacto"], a[href="/productos"]')
-      if (!link) return
+      const link = event.target.closest('a')
+      if (!link || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+      if (link.target === '_blank' || link.origin !== window.location.origin || !link.pathname.startsWith(BASE)) return
       event.preventDefault()
       window.history.pushState({}, '', link.href)
       update()
@@ -211,5 +215,5 @@ export default function App() {
   if (path.startsWith('/contacto')) return <ContactPage />
   if (path.startsWith('/productos')) return <CatalogPage />
   if (product) return <Detail product={product} />
-  return <><Header /><main><HeroCarousel /><AboutSection /><section className="cta"><p className="eyebrow">Inspírate y atrévete</p><h2>El color cambia todo.</h2><p>Haz de tu casa un lugar más tuyo. Te acompañamos a elegir el tono perfecto.</p><a className="button yellow" href="/contacto">HABLEMOS DE TU PROYECTO</a></section></main><Footer /></>
+  return <><Header /><main><HeroCarousel /><AboutSection /><section className="cta"><p className="eyebrow">Inspírate y atrévete</p><h2>El color cambia todo.</h2><p>Haz de tu casa un lugar más tuyo. Te acompañamos a elegir el tono perfecto.</p><a className="button yellow" href={url('contacto')}>HABLEMOS DE TU PROYECTO</a></section></main><Footer /></>
 }
